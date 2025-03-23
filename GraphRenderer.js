@@ -10,18 +10,5 @@ class GraphRenderer {
             graphDiv: this.graphDiv
         });
         this.graphEditor.init();
-
-        // this.#renderStart();
     }
-
-    // #renderStart() {
-    //     const step = () => {
-    //         this.graphEditor.update();
-    //         requestAnimationFrame(step);
-    //     }
-
-    //     requestAnimationFrame(step);   
-    // }
-
-
 }

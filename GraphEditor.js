@@ -12,7 +12,6 @@ class GraphEditor {
     }
     
     init() {
-        console.log(this.graph);
         this.graph.addNode(200, 200);
         this.graph.addNode(330, 70);
         this.graph.addNode(200, 300);
@@ -23,8 +22,4 @@ class GraphEditor {
         this.graph.addEdge(this.graph.nodes[1], this.graph.nodes[3]);
         this.graph.addEdge(this.graph.nodes[2], this.graph.nodes[3]);
     }
-
-    // update() {
-    //     this.graph.update();
-    // }
 }
