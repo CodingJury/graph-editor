@@ -1,0 +1,20 @@
+/* #graph-editor {
+    height: 500px;
+    width: 500px;
+
+    border: 1px solid black;
+} */
+
+#graph-editor svg {
+    border: 1px solid red;
+}
+
+#graph-editor svg .selected-node {
+    color: red;
+}
+
+#graph-editor svg .selected-node {
+    border: 1px solid blue;
+    background-color: blue;
+    color: red;
+}
