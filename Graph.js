@@ -89,10 +89,10 @@ class Graph {
             onDragEnd: () => {
                 this.isDragging = false;
             },
-            onDragMove: () => {
-                // Update edges when node moves
-                this.updateEdges();
-            }
+            // onDragMove: () => {
+            //     // Update edges when node moves
+            //     this.updateEdges();
+            // }
         });
         
         // Initialize velocity
@@ -200,12 +200,6 @@ class Graph {
     }
 
     updateEdges() {
-        this.#edges.forEach(edge => edge.update());
+        this.#edges.forEach(edge => edge.update(this.#edges, this.nodes));
     }
-
-    // update() {
-    //     this.#nodes.forEach(node => {
-    //         node.update();
-    //     });
-    // }
 }
