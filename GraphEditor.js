@@ -2,13 +2,10 @@ class GraphEditor {
     constructor(config) {
         this.graphDiv = config.graphDiv;
 
-        this.graph = new Graph({
-            graphDiv: this.graphDiv
-        });
+        this.graph = new Graph();
         this.graph.init();
 
-        this.graphDiv.appendChild(this.graph.svg);
-
+        this.graphDiv.appendChild(this.graph.svg); // Add the graph SVG to the graph editor
     }
     
     init() {

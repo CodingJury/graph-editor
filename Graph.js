@@ -3,7 +3,7 @@ class Graph {
     // #nodes;
     #edges;
     
-    constructor(config) {
+    constructor() {
         this.svg = null;
 
         this.nodeLabel = 1;
@@ -20,7 +20,8 @@ class Graph {
         this.repulsionStrength = 1000;  // Repulsion force strength
         this.damping = 0.9;  // Velocity damping factor
         
-        // Start animation loop
+        // Initialize the graph
+        this.init();
         this.startForceSimulation();
     }
     
@@ -88,11 +89,7 @@ class Graph {
             },
             onDragEnd: () => {
                 this.isDragging = false;
-            },
-            // onDragMove: () => {
-            //     // Update edges when node moves
-            //     this.updateEdges();
-            // }
+            }
         });
         
         // Initialize velocity
@@ -134,65 +131,42 @@ class Graph {
             // Skip force calculation for dragged nodes
             if (node1.isDragging) return;
 
-            node1.fx = 0;
-            node1.fy = 0;
-            node1.vx = node1.vx || 0;
-            node1.vy = node1.vy || 0;
-
             // Apply repulsion forces between all nodes
             this.nodes.forEach(node2 => {
                 if (node1 === node2) return;
 
-                const dx = node2.x - node1.x;
-                const dy = node2.y - node1.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                const diff = node2.position.subtract(node1.position);
+                const distance = diff.magnitude();
                 
                 if (distance === 0) return;
 
                 // Repulsion force
-                const force = this.repulsionStrength / (distance * distance);
-                const forceX = (dx / distance) * force;
-                const forceY = (dy / distance) * force;
-                
-                node1.fx -= forceX;
-                node1.fy -= forceY;
+                const force = diff.normalize().multiply(-this.repulsionStrength / (distance * distance));
+                node1.applyForce(force);
             });
 
             // Apply spring forces for connected nodes
             this.#edges.forEach(edge => {
                 if (edge.node1 === node1 || edge.node2 === node1) {
                     const otherNode = edge.node1 === node1 ? edge.node2 : edge.node1;
-                    const dx = otherNode.x - node1.x;
-                    const dy = otherNode.y - node1.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const diff = otherNode.position.subtract(node1.position);
+                    const distance = diff.magnitude();
                     
                     if (distance === 0) return;
 
                     // Spring force
                     const displacement = distance - this.springLength;
-                    const force = displacement * this.springStrength;
-                    const forceX = (dx / distance) * force;
-                    const forceY = (dy / distance) * force;
-                    
-                    node1.fx += forceX;
-                    node1.fy += forceY;
+                    const springForce = diff.normalize().multiply(displacement * this.springStrength);
+                    node1.applyForce(springForce);
                 }
             });
 
-            // Update velocity and position only for non-dragged nodes
-            node1.vx = (node1.vx + node1.fx) * this.damping;
-            node1.vy = (node1.vy + node1.fy) * this.damping;
-
-            // Update position
-            node1.x += node1.vx;
-            node1.y += node1.vy;
+            // Update physics
+            node1.updatePhysics(this.damping);
 
             // Keep nodes within bounds
-            node1.x = Math.max(50, Math.min(450, node1.x));
-            node1.y = Math.max(50, Math.min(450, node1.y));
-
-            // Update node position in SVG
-            node1.updatePosition();
+            node1.position.x = Math.max(50, Math.min(450, node1.position.x));
+            node1.position.y = Math.max(50, Math.min(450, node1.position.y));
         });
 
         // Update edge positions
